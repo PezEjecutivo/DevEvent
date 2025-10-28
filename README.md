@@ -11,7 +11,7 @@ npx create-next-app@latest
 
 Una vez usemos ese comando, nos preguntara que tipo de configuración queremos, en nuestro caso utilizaremos la configuración recomendada, la cual esta configurada con: `TypeScript, ESLint, Tailwind CSS, App Router, Turbopack`.
 
-Para comprobar que hemos creado el proyecto sin problemas, utilizaremos el comando `npm run dev`, si vamos al puerto 3000 de nuestro local host podremos ver que esta la pagina por defecto de Nextjs
+Para comprobar que hemos creado el proyecto sin problemas, utilizaremos el comando `npm run dev`, si vamos al puerto 3000 de nuestro local host podremos ver que esta la pagina por defecto de Nextjs:
 
 Aunque TailwindCSS viene instalado (debido a la configuración que hemos escogido) tambien necesitaremos instalar `tw-animate-css`, para ello, tendremos que usar el siguiente comando:
 
@@ -184,3 +184,52 @@ Además de esto, pondremos al objeto en un main, en vez de dejarlo sin nada como
       </body>
 ```
 
+---
+
+## Home page
+
+### Componente ExploreBtn 
+
+Aunque es un proyecto pequeño y en el que solamente estoy trabajando yo, para mantener las mejores practicas posibles, trabajare mediante el uso de ramas, aunque no utilizare la metodologia de gitflow, ya que como he comentado, debido a las caracteristicas del proyecto y los participantes, seria como matar una mosca a cañonazos.
+
+Para trabajar por ramas, una vez estamos en la rama main, simplemente haremos el siguiente comando:
+
+```shell
+git checkout -b homepage
+```
+
+De esta manera, habremos creado una rama llamada homepage y nos habremos cambiado a ella para trabajar directamente sobre ella.
+
+Lo primero que haremos sera crear un componente, él cuál sea un boton, esto es debido a next.js y todo su server side rendering, por lo que necesitaremos un componente que sea un boton para interactuar de mejor manera con el cliente, una vez hemos creado el componente (en este caso lo he llamado `ExploreBtn`), lo añadiremos a la pagina principal `( app > page.tsx )`.
+
+Como podeis apreciar, si ponemos un `onClick` al boton, nos dara un error, diciendo que necesitamos que sea un componente de cliente para poder usar esas funcionalidades, es por eso, que hemos creado el boton como componente aparte, ahora solamente tendremos que usar el `'use client'`, en el componente del boton y tendremos todos los beneficios. Es decir, la pagina cargara mucho más rapido al ser un componente de servidor, pero podremos seguir interactuando con ella, ya que tenemos un componente de cliente.
+
+```typescript
+'use client';
+
+const ExploreBtn = () => {
+    return (
+        <button onClick={() => console.log('CLICK')}>ExploreBtn</button>
+    );
+};
+
+export default ExploreBtn;
+```
+
+Una vez tenemos un boton funcional, sin que nos de ningun error Next.js, podemos empezar a estilarlo y darle uso, terminando con un boton, tal que así:
+
+```typescript
+const ExploreBtn = () => {
+    return (
+        <button type="button" id="explore-btn" className="mt-7 mx-auto" onClick={() => console.log('CLICK')}>
+        
+            <a href="#events">Explore Events
+                <Image src="/icons/arrow-down.svg" alt="arrow-down" width={24} height={24} />
+            </a>
+            
+        </button>
+    );
+};
+```
+
+Es importante, tener en cuenta que al estar en  Next.js, deberemos de usar `Image from "next/image"`, para las imagenes, no podemos usar el tipico `<img />`. 
