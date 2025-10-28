@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+ Enlace a la web:
+ Enlace al repositorio:
 
-## Getting Started
+---
 
-First, run the development server:
+Creamos un proyecto de Next.js 16, [pagina oficial](https://nextjs.org/)  (En caso de que Next.js ya no sea la ultima versión, solo tendreis que cambiar el @latest por la versión que quieras)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npx create-next-app@latest
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Una vez usemos ese comando, nos preguntara que tipo de configuración queremos, en nuestro caso utilizaremos la configuración recomendada, la cual esta configurada con: `TypeScript, ESLint, Tailwind CSS, App Router, Turbopack`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Para comprobar que hemos creado el proyecto sin problemas, utilizaremos el comando `npm run dev`, si vamos al puerto 3000 de nuestro local host podremos ver que esta la pagina por defecto de Nextjs
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Aunque TailwindCSS viene instalado (debido a la configuración que hemos escogido) tambien necesitaremos instalar `tw-animate-css`, para ello, tendremos que usar el siguiente comando:
 
-## Learn More
+```shell
+npm install --save-dev tw-animate-css
+```
 
-To learn more about Next.js, take a look at the following resources:
+Una vez tenemos todas las dependencias que necesitamos instaladas y cambiado el favicon de la carpeta `app`, necesitaremos cambiar el titulo de la pagina, para cambiarlo tendremos que ir a `app > layout.tsx` y modificar la metadata:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```typescript
+export const metadata: Metadata = {
+  title: "DevEvent",
+  description: "The Hub for Every Dev Event You Mustn't Miss",
+};
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Además de esto, como vamos a utilizar diferentes tipografias, tendremos que cambiarlas/importarlas en el mismo archivo, es decir `app > layout.tsx`, las tipografias que vamos a usar seran: **Schibsted_Grotesk** y **Martian_Mono**, una vez hemos cambiado las tipografias y los metadatos, nuestos layout.tsx deberia verse tal que así:
 
-## Deploy on Vercel
+```typescript
+import type { Metadata } from "next";
+import { Schibsted_Grotesk, Martian_Mono } from "next/font/google";
+import "./globals.css";
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+const schibstedGrotesk = Schibsted_Grotesk({
+  variable: "--font-schibsted-grotesk",
+  subsets: ["latin"],
+});
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+const martianMono = Martian_Mono({
+  variable: "--font-martian-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "DevEvent",
+  description: "The Hub for Every Dev Event You Mustn't Miss",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body
+        className={`${schibstedGrotesk.variable} ${martianMono.variable} min-h-screen antialiased`}
+      >
+        {children}
+      </body>
+    </html>
+  );
+}
+```
+
