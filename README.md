@@ -11,7 +11,7 @@ npx create-next-app@latest
 
 Una vez usemos ese comando, nos preguntara que tipo de configuración queremos, en nuestro caso utilizaremos la configuración recomendada, la cual esta configurada con: `TypeScript, ESLint, Tailwind CSS, App Router, Turbopack`.
 
-Para comprobar que hemos creado el proyecto sin problemas, utilizaremos el comando `npm run dev`, si vamos al puerto 3000 de nuestro local host podremos ver que esta la pagina por defecto de Nextjs:
+Para comprobar que hemos creado el proyecto sin problemas, utilizaremos el comando `npm run dev`, si vamos al puerto 3000 de nuestro local host podremos ver que esta la pagina por defecto de Nextjs
 
 Aunque TailwindCSS viene instalado (debido a la configuración que hemos escogido) tambien necesitaremos instalar `tw-animate-css`, para ello, tendremos que usar el siguiente comando:
 
@@ -233,3 +233,56 @@ const ExploreBtn = () => {
 ```
 
 Es importante, tener en cuenta que al estar en  Next.js, deberemos de usar `Image from "next/image"`, para las imagenes, no podemos usar el tipico `<img />`. 
+
+### Componente Navbar
+
+Lo primero que haremos sera crear un componente llamado `Navbar.tsx` y a diferencia de los demas, al ser la navbar, este no estara en vuelto en etiquetas `<section>`, sino en la etiqueta `<header>`, ya que necesitamos mantener una estructura para que nuestra pagina sea más accesible y tenga mejor `SEO`, al igual que antes, en vez de tener una etiqueta `<div>`, tendra una etiqueta `<nav>`, con esto en mente, montamos el componente:
+
+```typescript
+import Image from "next/image";
+import Link from "next/link";
+
+const Navbar = () => {
+    return (
+        <header>
+            <nav>
+                <Link href='/' className="logo">
+                    <Image src="/icons/logo.png" alt="logo" width={24} height={24} />
+
+                    <p>DevEvent</p>
+                </Link>
+
+                <ul>
+                    <Link href='/'>Home</Link>
+                    <Link href='/'>Events</Link>
+                    <Link href='/'>Create Event</Link>
+                </ul>
+            </nav>
+        </header>
+    );
+};
+
+export default Navbar;
+```
+
+Por norma general, en vez de hacer una `ul` para los links, haria una constante que lo guardara todo y simplemente lo mapearia, pero como en este caso, son solamente 3, no creo que merezca la pena, aunque si en un futuro deseara expandirlo, si que lo convertiria en una constante la cual mapeara.
+
+A diferencia de los proyectos de Vite + React, que he hecho anteriormente, la navbar, no va en la pagina principal, sino que va en el layout, ya que queremos que esta navbar este en todas (o en la gran mayoria) de nuestras paginas.
+
+
+## Componente EventCard
+
+Lo primero que haremos, sera en nuestro pagina principal `app > page.tsx`, crear un pequeño div, debajo del boton, donde mapearemos los eventos, de momento haremos lo dejeremos practicamente vacio, como un placeholder, para cambiarlo más adelante por los datos correctos:
+
+```typescript
+<div className="mt-20 space-y-7">
+    <h3>Featured Events</h3>
+
+    <ul className="events">
+        {[1, 2, 3, 4, 5].map((event) => (
+        <li key={event}>Event {event}</li>
+        ))}
+    </ul>
+</div>
+```
+
