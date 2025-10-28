@@ -286,3 +286,178 @@ Lo primero que haremos, sera en nuestro pagina principal `app > page.tsx`, crear
 </div>
 ```
 
+Crearemos un componente llamado `EventCard`, el cual, recibira los eventos mediante parametros, es decir:
+
+```typescript
+const EventCard = ({ title, image }: Props) => {
+    return (
+        <div>EventCard</div>
+    );
+};
+
+export default EventCard;
+```
+
+Es importante, tener en cuenta que estamos usando typescript, por lo que debemos definir que tipo es cada propiedad que le pasamos al componente, para esto, lo haremos en `interface Props{}`, de la siguiente manera:
+
+```typescript
+interface Props {
+    title: string;
+    image: string;
+}
+```
+
+Si juntamos esto, tendremos el esqueleto de nuestro componente:
+
+```typescript
+interface Props {
+    title: string;
+    image: string;
+}
+
+const EventCard = ({ title, image }: Props) => {
+    return (
+        <div>EventCard</div>
+    );
+};
+
+export default EventCard;
+```
+
+El componente final, simplemente utilizara las propiedades, para crear una tarjeta, usando tanto el titulo, como la imagen, es importante recordar, que al estar en Next.js, tendremos que usar el `Link` y el `Image` de Next.js:
+
+```typescript
+import Image from "next/image";
+import Link from "next/link";
+
+interface Props {
+    title: string;
+    image: string;
+}
+
+const EventCard = ({ title, image }: Props) => {
+    return (
+        <Link href={'/events'} id="event-card">
+            <Image src={image} alt={title} width={410} height={310} className="poster" />
+
+            <p className="title">{title}</p>
+
+        </Link>
+    );
+};
+
+export default EventCard;
+```
+
+Una vez tenemos este componente, volveremos a la pagina principal `app > page.tsx`, en la cual habiamos dejado un placeholder para modificarlo ahora con nuestro componente, lo primero que haremos, antes de tocar dicho placeholder, sera crear una constante de eventos arriba del todo, la cual tendra los eventos que vamos a mapear:
+
+```typescript
+const events = [
+  { image: '/images/event1.png', title: 'Event 1' },
+  { image: '/images/event2.png', title: 'Event 2' },
+  { image: '/images/event3.png', title: 'Event 3' },
+];
+```
+
+Una vez con esto, en vez de un array del 1 al 5 que teniamos puesto, podremos poner nuestra `const events` y en vez de renderizar una lista, renderizaremos el componente, al cual le vamos a pasar las propiedades, las cuales son los datos de la constante que hemos creado anteriormente (Importante no olvidar pasarle una key):
+
+```typescript
+<ul className="events">
+  {events.map((event) => (
+    <EventCard key={event.title} title={event.title} image={event.image} />
+  ))}
+</ul>
+```
+
+Otra forma de hacerlo, podria ser pasandole una copia del objeto completo directamente:
+
+```typescript
+        <ul className="events">
+          {events.map((event) => (
+            <li key={event.title}>
+              <EventCard {...event} />
+            </li>
+          ))}
+        </ul>
+```
+
+De ambas manera funcionara, pero en la segunda, al pasarle una copia del objeto, en caso de que el componente modificase algo de la constante, solamente lo haria para el, ya que no tiene la constante en si, sino una copia de ella.
+
+En este caso, aunque no vaya a modificar los datos dentro del componente, prefiere la segunda opción, ya que es una mejor practica que la anterior, aunque ambas funcionan correctamente. (En caso de que te moleste el puntito de la li, puedes usar `list-none`, para eliminarlo, o usar directamente un `ul` en vez de `li`).
+
+Una vez hemos comprobado que funciona nuestro componente y que podemos pasarle las propiedades sin ningun problema, vamos a añadir todas las propiedades que de verdad necesitamos:
+
+```typescript
+export const events = [
+  {
+    slug: "react-conf-2024",
+    image: "/images/event1.png",
+    title: "React Conf 2024",
+    location: "San Francisco, CA",
+    date: "March 15, 2024",
+    time: "9:00 AM - 6:00 PM",
+  },
+  ...
+];
+```
+
+Como se puede apreciar, esta constante ya es bastante grande, por lo que deberemos de crear un archivo para las constantes, ya que si no, "ensuciara" mucho el codigo y sera dificil de leer más adelante, para ello crearemos una carpeta llamada `lib` y dentro de ella un archivo llamado `constants.ts`, donde guardaremos las constantes. Una vez hayamos hecho el cambio, asegurate de importar la constante de los eventos.
+
+Ademas de añadirlo a esa constante, deberemos de modificar el `interface Props{}`, para que tenga todos los tipos que queremos:
+
+```typescript
+interface Props {
+    title: string;
+    image: string;
+    slug: string;
+    location: string;
+    date: string;
+    time: string;
+}
+```
+
+Una vez tenemos todas las propiedades con sus tipos y valores, deberemos de modificar el componente de EventCard, para que pueda obtenerlas y mostrarla, lo primero que debemos de hacer, es añadir dichas propiedades a los parametros y luego estructurarlo como queramos:
+
+```typescript
+import Image from "next/image";
+import Link from "next/link";
+
+interface Props {
+    title: string;
+    image: string;
+    slug: string;
+    location: string;
+    date: string;
+    time: string;
+}
+
+const EventCard = ({ title, image, slug, location, date, time }: Props) => {
+    return (
+        <Link href={`/events/${slug}`} id="event-card">
+            <Image src={image} alt={title} width={410} height={310} className="poster" />
+
+            <div className="flex flex-row gap-2">
+                <Image src="/icons/pin.svg" alt="location" width={14} height={14} />
+                <p>{location}</p>
+            </div>
+
+            <p className="title">{title}</p>
+
+            <div className="datetime">
+                <div>
+                    <Image src="/icons/calendar.svg" alt="date" width={14} height={14} />
+                    <p>{date}</p>
+                </div>
+                <div>
+                    <Image src="/icons/clock.svg" alt="time" width={14} height={14} />
+                    <p>{time}</p>
+                </div>
+            </div>
+
+        </Link>
+    );
+};
+
+export default EventCard;
+```
+
